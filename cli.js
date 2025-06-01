@@ -7,10 +7,6 @@ program
     .argument("[length]", "string length", 24)
     .action((length) => {
         console.log(randomstring.generate(parseInt(length)));
-        // Example: Access DB_PASSWORD if needed
-        if (process.env.DB_PASSWORD) {
-            console.log("DB Password is set (not logged for security)");
-        }
     });
 
 program
