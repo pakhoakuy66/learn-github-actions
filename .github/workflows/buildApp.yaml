@@ -7,7 +7,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest, macos-latest]
-                node: [16, 18]
+                node: [14, 16, 18]
         runs-on: ${{matrix.os}}
         steps:
             - uses: actions/checkout@v4
@@ -16,6 +16,7 @@ jobs:
                   node-version: ${{matrix.node}}
 
             - run: npm install
+            - run: npm install commander@10.0.1 randomstring --save
             - run: node cli.js build --os ${{matrix.os}} --node ${{matrix.node}} > app-${{matrix.os}}-${{matrix.node}}.js
 
             - uses: actions/upload-artifact@v4
