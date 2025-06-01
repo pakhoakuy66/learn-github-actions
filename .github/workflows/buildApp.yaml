@@ -1,25 +1,27 @@
-name: Bulid Electron App
+name: Build Electron App
+
 on:
     pull_request:
-        type: [opened, reopened, synchronize]
+        types: [opened, reopened, synchronize]
+
 jobs:
     build-app:
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest, macos-latest]
                 node: [14, 16, 18]
-        runs-on: ${{matrix.os}}
+        runs-on: ${{ matrix.os }}
+
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
               with:
-                  node-version: ${{matrix.node}}
+                  node-version: ${{ matrix.node }}
 
-            - run: npm install
-            - run: npm install commander@10.0.1 randomstring --save
-            - run: node cli.js build --os ${{matrix.os}} --node ${{matrix.node}} > app-${{matrix.os}}-${{matrix.node}}.js
+            - run: npm ci
+            - run: node cli.js build --os ${{ matrix.os }} --node ${{ matrix.node }} > app-${{ matrix.os }}-${{ matrix.node }}.js
 
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               with:
                   name: released-app
-                  path: app-${{matrix.os}}-${{matrix.node}}.js
+                  path: app-${{ matrix.os }}-${{ matrix.node }}.js
