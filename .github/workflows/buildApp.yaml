@@ -1,47 +1,25 @@
-name: Build Electron App
+name: Bulid Electron App
 on:
     pull_request:
-        types: [opened, reopened, synchronize]
-
-permissions:
-    contents: read
-    actions: write
-
-env:
-    ACTIONS_STEP_DEBUG: true # Bật debug để lấy thêm thông tin
-
+        type: [opened, reopened, synchronize]
 jobs:
     build-app:
-        timeout-minutes: 30
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest, macos-latest]
-                node: [16, 18] # Loại bỏ Node 14
+                node: [14, 16, 18]
         runs-on: ${{matrix.os}}
         steps:
-            - name: Check network connectivity
-              run: ping -c 4 api.github.com
-
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
               with:
                   node-version: ${{matrix.node}}
-                  architecture: x64 # Đảm bảo tương thích
 
-            - name: Check cli.js existence
-              run: ls -l cli.js
+            - run: npm install
+            - run: npm install commander@10.0.1 randomstring --save
+            - run: node cli.js build --os ${{matrix.os}} --node ${{matrix.node}} > app-${{matrix.os}}-${{matrix.node}}.js
 
-            - name: Install dependencies
-              run: npm install
-
-            - name: Build app
-              run: node cli.js build --os ${{matrix.os}} --node ${{matrix.node}} > app-${{matrix.os}}-${{matrix.node}}.js
-
-            - name: Upload artifact
-              uses: actions/upload-artifact@v4 # Cập nhật lên v4
+            - uses: actions/upload-artifact@v3
               with:
                   name: released-app
                   path: app-${{matrix.os}}-${{matrix.node}}.js
