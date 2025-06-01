@@ -3,27 +3,17 @@ on:
     push:
         branches: [main]
     pull_request:
-        types: [opened, reopened, synchronize]
+        type: [opened, reopened, synchronize]
     workflow_dispatch:
 
 jobs:
     Coverage-report:
         runs-on: ubuntu-latest
-        permissions:
-            checks: write
-            pull-requests: write
-            contents: read
         steps:
             - uses: actions/checkout@v2
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: "20"
-            - run: npx browserslist@latest --update-db
             - run: npm install
-            - run: npm audit fix
             - uses: ArtiomTr/jest-coverage-report-action@v2.0-rc.6
               with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-                  skip-base: true # Optional: Skip base branch coverage if main lacks package.json
-              env:
-                  NODE_OPTIONS: --no-deprecation
+                  github-token: ${{ secrets.GITHUB_TOKEN}}
+                  threshold: 90
+                  skip-step: install
