@@ -23,5 +23,5 @@ jobs:
 
             - uses: actions/upload-artifact@v4
               with:
-                  name: released-app
-                  path: app-${{ matrix.os }}-${{ matrix.node }}.js
+                name: released-app-${{ matrix.os }}-${{ matrix.node }}
+                path: app-${{ matrix.os }}-${{ matrix.node }}.js
